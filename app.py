@@ -148,6 +148,9 @@ def index():
   .high { background: #d4edda; }
   .med { background: #fff3cd; }
   .low { background: #f8d7da; }
+  td[contenteditable] { cursor: text; }
+  td[contenteditable]:focus { outline: 2px solid #4c8bf5; outline-offset: -2px; background: #fff; }
+  caption { caption-side: top; text-align: left; font-size: .85rem; color: #666; padding-bottom: .25rem; }
   pre { background: #f8f8f8; padding: 1rem; overflow: auto; font-size: .8rem; }
   #status { color: #666; font-size: .9rem; }
   #saved-msg { color: green; font-weight: bold; }
@@ -169,6 +172,7 @@ def index():
 </div>
 
 <table id="result-table" style="display:none">
+  <caption>Klicka i en cell för att redigera. Ändringar sparas när du klickar "Spara inventering".</caption>
   <thead><tr><th>Material</th><th>Objekt</th><th>Mängd</th><th>Återbrukspotential</th></tr></thead>
   <tbody id="result-body"></tbody>
 </table>
@@ -199,6 +203,24 @@ const sourceEl = document.getElementById('source');
 
 let lastResult = null;
 let timerId = null;
+
+tbody.addEventListener('input', (e) => {
+  const td = e.target;
+  if (!td.dataset || td.dataset.idx === undefined || !lastResult || !lastResult.items) return;
+  const idx = parseInt(td.dataset.idx, 10);
+  const key = td.dataset.key;
+  lastResult.items[idx][key] = td.textContent;
+  if (key === 'reuse_potential') {
+    const tr = td.parentElement;
+    tr.classList.remove('high', 'med', 'low');
+    const v = td.textContent.toLowerCase();
+    if (v.startsWith('hög')) tr.classList.add('high');
+    else if (v.startsWith('med')) tr.classList.add('med');
+    else if (v.startsWith('låg')) tr.classList.add('low');
+  }
+  raw.textContent = JSON.stringify(lastResult, null, 2);
+  savedMsg.textContent = '';
+});
 
 fileInput.addEventListener('change', () => {
   const f = fileInput.files[0];
@@ -243,7 +265,7 @@ analyzeBtn.addEventListener('click', async () => {
     sourceEl.textContent = 'Källa: ' + (data._source || 'okänd');
 
     tbody.innerHTML = '';
-    (data.items || []).forEach(it => {
+    (data.items || []).forEach((it, idx) => {
       const tr = document.createElement('tr');
       const pot = (it.reuse_potential || '').toLowerCase();
       if (pot.startsWith('hög')) tr.classList.add('high');
@@ -252,6 +274,9 @@ analyzeBtn.addEventListener('click', async () => {
       ['material', 'object', 'quantity', 'reuse_potential'].forEach(k => {
         const td = document.createElement('td');
         td.textContent = it[k] || '';
+        td.contentEditable = 'true';
+        td.dataset.idx = idx;
+        td.dataset.key = k;
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
