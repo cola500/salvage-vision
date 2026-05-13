@@ -132,7 +132,11 @@ ROOMS_HTML = """<!doctype html>
 
   .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .75rem; }
   .img-card { border: 2px solid #eee; padding: .5rem; border-radius: 4px; display: flex; flex-direction: column; gap: .4rem; }
-  .img-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; }
+  .img-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; cursor: zoom-in; }
+  .img-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+               background: rgba(0,0,0,.85); z-index: 1000; cursor: zoom-out;
+               align-items: center; justify-content: center; }
+  .img-modal img { max-width: 95vw; max-height: 95vh; box-shadow: 0 0 30px rgba(0,0,0,.5); }
   .img-card .filename { font-family: monospace; font-size: .75rem; color: #555; }
   .img-card select { font-size: .85rem; padding: .25rem; }
   .img-card .analyze-row { display: flex; gap: .5rem; align-items: center; font-size: .8rem; }
@@ -211,6 +215,8 @@ ROOMS_HTML = """<!doctype html>
 <h2>State (rå JSON)</h2>
 <pre id="raw">(tom)</pre>
 
+<div class="img-modal" id="img-modal"><img id="img-modal-img" alt="förstorad bild"></div>
+
 <script>
 const IMAGES = __IMAGES_JSON__;
 const ZONES = __ZONES_JSON__;
@@ -240,7 +246,11 @@ function renderImageGrid() {
   state.images.forEach((img, idx) => {
     const cls = 'img-card ' + (img.status === 'analyzed' ? 'analyzed' : img.status === 'analyzing' ? 'analyzing' : img.status === 'error' ? 'error' : '');
     const card = el('div', { className: cls });
-    card.appendChild(el('img', { attrs: { src: '/dataset/' + img.file, alt: img.file } }));
+    const imgEl = el('img', {
+      attrs: { src: '/dataset/' + img.file, alt: img.file, title: 'Klicka för att förstora' },
+      on: { click: () => openImgModal('/dataset/' + img.file) },
+    });
+    card.appendChild(imgEl);
     card.appendChild(el('div', { className: 'filename', text: img.file }));
 
     const select = el('select', { className: 'zone-' + (img.zone || 'none') });
@@ -304,8 +314,8 @@ function renderZones() {
     const table = el('table');
     table.appendChild(el('thead', {}, [
       el('tr', {}, [
-        el('th', { text: 'Material' }),
         el('th', { text: 'Objekt' }),
+        el('th', { text: 'Material' }),
         el('th', { text: 'Mängd' }),
         el('th', { text: 'Återbruk' }),
         el('th', { text: 'Conf.' }),
@@ -322,7 +332,7 @@ function renderZones() {
       if (it.user_duplicate) classes.push('user-dup');
       const tr = el('tr', { className: classes.join(' ') });
 
-      ['material', 'object', 'quantity', 'reuse_potential'].forEach(key => {
+      ['object', 'material', 'quantity', 'reuse_potential'].forEach(key => {
         const td = el('td', { text: it[key] || '', attrs: { contenteditable: 'true' } });
         td.dataset.imgIdx = it._imgIdx;
         td.dataset.itemIdx = it._itemIdx;
@@ -386,8 +396,8 @@ function renderTotal() {
   table.appendChild(el('thead', {}, [
     el('tr', {}, [
       el('th', { text: 'Zon' }),
-      el('th', { text: 'Material' }),
       el('th', { text: 'Objekt' }),
+      el('th', { text: 'Material' }),
       el('th', { text: 'Mängd' }),
       el('th', { text: 'Återbruk' }),
       el('th', { text: 'Källa' }),
@@ -397,8 +407,8 @@ function renderTotal() {
   allActive.forEach(it => {
     tbody.appendChild(el('tr', {}, [
       el('td', { className: 'zone-' + it._zone, text: it._zone.replace('_', '/') }),
-      el('td', { text: it.material || '' }),
       el('td', { text: it.object || '' }),
+      el('td', { text: it.material || '' }),
       el('td', { text: it.quantity || '' }),
       el('td', { text: it.reuse_potential || '' }),
       el('td', { className: 'src-label', text: it._source }),
@@ -514,6 +524,15 @@ function findDuplicates(items) {
   }
   return dups;
 }
+
+const imgModal = document.getElementById('img-modal');
+const imgModalImg = document.getElementById('img-modal-img');
+function openImgModal(src) {
+  imgModalImg.src = src;
+  imgModal.style.display = 'flex';
+}
+imgModal.addEventListener('click', () => { imgModal.style.display = 'none'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') imgModal.style.display = 'none'; });
 
 document.getElementById('analyze-all').addEventListener('click', analyzeAll);
 renderAll();
@@ -655,6 +674,11 @@ def index():
   #status { color: #666; font-size: .9rem; }
   #saved-msg { color: green; font-weight: bold; }
   .source { font-size: .8rem; color: #888; margin-top: .5rem; }
+  #preview { cursor: zoom-in; }
+  .img-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+               background: rgba(0,0,0,.85); z-index: 1000; cursor: zoom-out;
+               align-items: center; justify-content: center; }
+  .img-modal img { max-width: 95vw; max-height: 95vh; box-shadow: 0 0 30px rgba(0,0,0,.5); }
 </style>
 </head>
 <body>
@@ -672,10 +696,12 @@ def index():
 </div>
 
 <table id="result-table" style="display:none">
-  <caption>Klicka i en cell för att redigera. Ändringar sparas när du klickar "Spara inventering".</caption>
-  <thead><tr><th>Material</th><th>Objekt</th><th>Mängd</th><th>Återbrukspotential</th></tr></thead>
+  <caption>Klicka i en cell för att redigera. Ändringar sparas när du klickar "Spara inventering". Klicka på bilden för att förstora.</caption>
+  <thead><tr><th>Objekt</th><th>Material</th><th>Mängd</th><th>Återbrukspotential</th></tr></thead>
   <tbody id="result-body"></tbody>
 </table>
+
+<div class="img-modal" id="img-modal"><img id="img-modal-img" alt="förstorad bild"></div>
 
 <div class="source" id="source"></div>
 
@@ -771,7 +797,7 @@ analyzeBtn.addEventListener('click', async () => {
       if (pot.startsWith('hög')) tr.classList.add('high');
       else if (pot.startsWith('med')) tr.classList.add('med');
       else if (pot.startsWith('låg')) tr.classList.add('low');
-      ['material', 'object', 'quantity', 'reuse_potential'].forEach(k => {
+      ['object', 'material', 'quantity', 'reuse_potential'].forEach(k => {
         const td = document.createElement('td');
         td.textContent = it[k] || '';
         td.contentEditable = 'true';
@@ -801,6 +827,16 @@ saveBtn.addEventListener('click', async () => {
   const d = await r.json();
   savedMsg.textContent = `✓ sparad (totalt ${d.count} inventeringar)`;
 });
+
+const imgModal = document.getElementById('img-modal');
+const imgModalImg = document.getElementById('img-modal-img');
+preview.addEventListener('click', () => {
+  if (!preview.src) return;
+  imgModalImg.src = preview.src;
+  imgModal.style.display = 'flex';
+});
+imgModal.addEventListener('click', () => { imgModal.style.display = 'none'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') imgModal.style.display = 'none'; });
 </script>
 </body>
 </html>"""
