@@ -32,18 +32,50 @@ MOCK = {
 PROMPT = """Du är expert på återbruksinventering inom bygg och fastighet.
 Analysera bilden och identifiera material/objekt som potentiellt kan återbrukas.
 
-Returnera ENDAST ett JSON-objekt — ingen markdown, inga code-fences, ingen text före eller efter.
-Börja svaret direkt med { och avsluta med }.
+VIKTIGA REGLER:
+
+1. Synlighet — lista BARA det som faktiskt syns i bilden.
+   - Lägg inte till föremål för att de "borde" finnas i ett kök/badrum/rum.
+   - Om en yta är skymd eller utanför bildens kant — lista den inte.
+   - Hellre färre poster än hittepå.
+
+2. Närbild och fragment — extrapolera inte.
+   - Om bilden är en närbild eller bara visar ett fragment av yta/objekt:
+     kvantifiera endast det som faktiskt syns.
+   - Skriv quantity som "kan ej bedömas från närbild" om total mängd eller
+     yta inte går att avgöra från bilden.
+   - Gissa inte hela rummets storlek från ett golvfragment.
+
+3. Ingen dubbelräkning — samma yta eller objekt = exakt en post.
+   - Ett golv är EN post, inte "parkett" + "lack" + "undergolv".
+   - En spiselkrans är EN post, inte två motstridiga materialposter.
+   - Om materialet är osäkert, skriv osäkerheten inom samma post
+     (t.ex. material: "trä (ek eller björk, osäkert)").
+
+4. Osäkerhet — markera tydligt när du är osäker.
+   - Hellre "osäkert" eller "kan ej bedömas" än kvalificerad gissning.
+   - Använd confidence-fältet (low | medium | high) för att signalera
+     hur säker du är på posten som helhet.
+
+Returnera ENDAST ett JSON-objekt — ingen markdown, inga code-fences, ingen
+text före eller efter. Börja svaret direkt med { och avsluta med }.
 
 Schema:
 {
   "items": [
-    {"material": "...", "object": "...", "quantity": "...", "reuse_potential": "Låg" | "Medium" | "Hög"}
+    {
+      "material": "...",
+      "object": "...",
+      "quantity": "...",
+      "reuse_potential": "Låg" | "Medium" | "Hög",
+      "confidence": "low" | "medium" | "high"
+    }
   ]
 }
 
-Var konkret och realistisk i mängd (t.ex. "ca 12 kvm", "1 st", "ca 3 löpmeter").
-Lista 3–8 objekt. Svara på svenska."""
+Var konkret och realistisk i mängd när bilden tillåter (t.ex. "ca 12 kvm",
+"1 st", "ca 3 löpmeter"). Lista 3–8 objekt — färre om bara få syns.
+Svara på svenska."""
 
 
 @app.post("/analyze")
