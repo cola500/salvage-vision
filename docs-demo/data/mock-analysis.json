@@ -1,0 +1,144 @@
+{
+  "_captured_at": "2026-05-14",
+  "_captured_from": "claude-sonnet-4-6 (real API)",
+  "_source_dataset": "Hallvägen 21, plan 4 — Lokalguiden.se",
+  "_note": "Real Claude Vision output captured against the Hallvägen 21 dataset. Served statically for the GitHub Pages demo so the UI works without API key or backend.",
+  "zones": ["KONTOR", "MÖTE", "SAMTAL", "PENTRY_PAUS", "ENTRÉ", "OUTSIDE_LOCAL"],
+  "default_zone_mapping": {
+    "img-01.jpg": "SAMTAL",
+    "img-02.jpg": "OUTSIDE_LOCAL",
+    "img-03.jpg": "SAMTAL",
+    "img-04.jpg": "PENTRY_PAUS",
+    "img-05.jpg": "SAMTAL",
+    "img-06.jpg": "PENTRY_PAUS",
+    "img-07.jpg": "ENTRÉ",
+    "img-08.jpg": "PENTRY_PAUS",
+    "img-09.jpg": "OUTSIDE_LOCAL",
+    "img-10.jpg": "KONTOR"
+  },
+  "images": [
+    {
+      "file": "img-01.jpg",
+      "items": [
+        {"material": "Trä (mahogny eller teak, osäkert)", "object": "Skjutdörrar/vikdörrar med ram", "quantity": "ca 3-4 st dörrelement synliga", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Härdat/strukturerat glas (frostat, reliefmönstrat)", "object": "Glaspartier i skjutdörr", "quantity": "ca 1-2 glasfyllningar synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Trä (ek eller furu, osäkert) med akustikpanel", "object": "Innertak i inbyggd pod/bås", "quantity": "ca 3-4 kvm synligt", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Textil, grå heltäckningsmatta", "object": "Golvmatta", "quantity": "ca 30-50 kvm synligt (kan ej bedömas exakt)", "reuse_potential": "Låg", "confidence": "low"},
+        {"material": "Tyg/skumgummi, grå klädsel", "object": "Fåtöljer (wingback-modell)", "quantity": "2 st synliga", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä med glasfyllning", "object": "Fönsterpartier/glasvägg mot fasad", "quantity": "ca 4-6 fönsterbågar synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Metall (stål), vit ytbehandling", "object": "Ventilationsrör och installationskanaler i tak", "quantity": "ca 8-12 löpmeter synliga", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    },
+    {
+      "file": "img-02.jpg",
+      "items": [
+        {"material": "Trä (mörkbetsad, troligen ek eller furu)", "object": "Dubbeldörr med glasrutor, entré", "quantity": "1 st (dubbeldörr ca 2,1 m hög, ca 1,6 m bred)", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä med svart smidesjärn", "object": "Trappa med räcke – böjd/svängd trappa synlig i bakgrunden", "quantity": "1 st trappa, räcke ca 8–12 löpmeter (osäkert)", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Smidesjärn med träledstång (mörkt trä)", "object": "Balkongräcke/balustrad på övervåning", "quantity": "ca 6–10 löpmeter synligt (kan ej bedömas fullt ut)", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Terrazzo eller polerad betong", "object": "Golvbeläggning i entréhall", "quantity": "ca 30–50 kvm (osäkert, stor hall)", "reuse_potential": "Låg", "confidence": "low"},
+        {"material": "Textil/gummi", "object": "Entrématta med logotyp (Castel...)", "quantity": "1 st, ca 1,5 x 2,5 m", "reuse_potential": "Låg", "confidence": "high"},
+        {"material": "Stål/metall, svartlackerad", "object": "Hissdörr/hissinstallation (synlig till höger)", "quantity": "1 st", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Glas och aluminium/stål", "object": "Fasadfönsterparti vid entré", "quantity": "ca 8–12 kvm synlig glasyta (kan ej bedömas fullt ut)", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    },
+    {
+      "file": "img-03.jpg",
+      "items": [
+        {"material": "Trä (mahogny eller rödbrun furu, osäkert)", "object": "Dörrkarm och dörrar med glaspartier (vikdörrar/skjutdörrar)", "quantity": "ca 2 dörröppningar med karmar, totalt ca 4–6 dörrlöv", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Glas", "object": "Glasfyllning i dörrar/rumsavskiljare", "quantity": "ca 6–8 glasfält synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Puts/betong med kvadratiska öppningar (dekorativ rutnätsvägg)", "object": "Rumsavdelare/vägg med geometriska genombrytningar", "quantity": "ca 6–8 kvm synlig yta", "reuse_potential": "Låg", "confidence": "low"},
+        {"material": "Textil/skumgummi, grå klädsel", "object": "Fåtöljer/loungstolar", "quantity": "2 st synliga", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Stål/aluminium med whiteboard-yta", "object": "Whiteboard på stativ (rullbart)", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä, lamelltak (mörkt träslag, osäkert)", "object": "Akustiktak/lamelltak i trä", "quantity": "ca 15–20 kvm synlig yta", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Plast/metall", "object": "Stor skärm/display monterad på stativ eller vägg", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Metall (vit lackad), troligen Ricoh eller liknande", "object": "Skrivare/kopiatorn stor format", "quantity": "1 st", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    },
+    {
+      "file": "img-04.jpg",
+      "items": [
+        {"material": "Trä (ek eller liknande, ljust)", "object": "Matbord", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Tyg och trä (grå klädsel, träben)", "object": "Stolar", "quantity": "4 st (synliga)", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Laminat eller lackad MDF (antracitgrå)", "object": "Köksskåp (över- och underskåp inkl. höga skåp)", "quantity": "ca 5–6 löpmeter skåpfronter synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Rostfritt stål eller laminat (ljust)", "object": "Bänkskiva kök", "quantity": "ca 2–3 löpmeter synlig", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Glas och trä (orange/brun ram)", "object": "Glasvägg/partition med träram", "quantity": "ca 3–4 löpmeter synlig, ca 2,4 m hög", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Keramik (mörkbrun/terrakotta)", "object": "Golvplattor", "quantity": "ca 8–12 kvm synliga (osäkert, delvis skymt)", "reuse_potential": "Medium", "confidence": "low"},
+        {"material": "Metall och glas (svart)", "object": "Inbyggd mikrovågsugn/ugn (Siemens)", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"}
+      ]
+    },
+    {
+      "file": "img-05.jpg",
+      "items": [
+        {"material": "Trä (furu eller gran, osäkert)", "object": "Vertikala träribbor/lamellpaneler på väggar", "quantity": "ca 20–25 kvm (tre synliga väggytor)", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Textil/tyg (ljusgrå)", "object": "Soffa, 3-sits", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Textil", "object": "Kuddar (1 vit/beige, 1 grön)", "quantity": "2 st", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Läder/konstläder (svart)", "object": "Kontorsstol med hjul", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Keramik/lera (bränd, brun)", "object": "Dekorativa cylinderformade keramikelement monterade på väggpanel", "quantity": "ca 15–18 st synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Textil/heltäckningsmatta (grå/brun)", "object": "Golvmatta", "quantity": "ca 12–15 kvm (synlig yta, osäkert om hela rummet)", "reuse_potential": "Låg", "confidence": "low"},
+        {"material": "Metall/glas", "object": "Takarmatur/pendel (rund, vit)", "quantity": "1 st synlig", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    },
+    {
+      "file": "img-06.jpg",
+      "items": [
+        {"material": "Glas", "object": "Hängande vinglasbåge med vinglas", "quantity": "ca 8–10 st vinglas synliga", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Trä (mörkbetsad, troligen ek eller furu)", "object": "Fönsterkarmar/dörrfoder vid fönstervägg", "quantity": "ca 3–4 löpmeter synligt", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Metall/stål (rostfritt, möjligen)", "object": "Köks-/bardisk", "quantity": "1 st, ca 1,5–2 löpmeter synlig", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Trä/laminat (mörkt)", "object": "Golvbeläggning (trä eller laminat)", "quantity": "ca 15–20 kvm synligt (osäkert, delvis skymt)", "reuse_potential": "Medium", "confidence": "low"},
+        {"material": "Metall/plast", "object": "Rund takarmatur (LED-panel)", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä (mörkbetsad, troligen ek)", "object": "Träpartier/dörrar i korridor", "quantity": "2 st dörrar synliga", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Metall/plast", "object": "Kaffebryggare och vattenkokare", "quantity": "2 st", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Papper/glas, inramade fotografier", "object": "Tavelramar med fotografier", "quantity": "2 st", "reuse_potential": "Medium", "confidence": "high"}
+      ]
+    },
+    {
+      "file": "img-07.jpg",
+      "items": [
+        {"material": "Trä (mörkbetsad, troligen ek eller mahogny)", "object": "Dörrkarmar med dörrblad", "quantity": "2 synliga dörrpartier med karmar", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä med metallhandtag (svart finish)", "object": "Dörrblad med trycke", "quantity": "1 st synligt (vänster i bild)", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Vit puts/lättklinker eller gasbetong", "object": "Innervägg med ingjutna glasblock", "quantity": "ca 4–5 kvm synlig yta, med ca 10 glasblock", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Glas (strukturglas, troligen profilglas)", "object": "Profilglasvägg/skjutvägg (vit/frostad)", "quantity": "ca 2–3 kvm synlig", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Trä, lamellpanel", "object": "Undertak i trä (lamelltak)", "quantity": "kan ej bedömas från bilden", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Terrazzo eller betonggolv med stenmix", "object": "Golvbeläggning i korridor", "quantity": "kan ej bedömas exakt, synlig yta ca 4–6 kvm", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Whiteboard (laminat/stål)", "object": "Whiteboardtavla på stativ", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"}
+      ]
+    },
+    {
+      "file": "img-08.jpg",
+      "items": [
+        {"material": "MDF/spånskiva med mörkgrå matt ytbehandling", "object": "Köksskåp (vägg- och basskåp samt höga skåp)", "quantity": "ca 6–8 skåpsluckor synliga, uppskattningsvis 4–5 löpmeter kök", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Rostfritt stål", "object": "Bänkskiva/diskbänk", "quantity": "ca 2–3 löpmeter synlig yta", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Keramik, vit/ljusgrå handgjord karaktär", "object": "Väggkakel (stänkskydd bakom bänk)", "quantity": "ca 2–3 kvm synlig yta", "reuse_potential": "Låg", "confidence": "medium"},
+        {"material": "Svartlackad metall", "object": "Blandare (kökskran)", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Glas/metall (Siemens, svart)", "object": "Inbyggd mikrovågsugn/ugn", "quantity": "1 st", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Trä, ek (ljust)", "object": "Matbord", "quantity": "1 st, ca 160–180 cm långt (uppskattning)", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Textil/skumgummi, grå klädsel på metallstomme", "object": "Stolar", "quantity": "3 st synliga", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Metall/glas, vit/silver", "object": "Rundformad takarmatur (pendel/taklampa)", "quantity": "1 st synlig", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    },
+    {
+      "file": "img-09.jpg",
+      "items": [
+        {"material": "Trä (ek eller liknande hårdträ)", "object": "Böjt trappled/handledare", "quantity": "1 st, ca 4–5 löpmeter synligt", "reuse_potential": "Hög", "confidence": "high"},
+        {"material": "Betong (terrazzo eller slipat betong)", "object": "Trappsteg", "quantity": "ca 8–10 synliga steg", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Stål (svartlackerat)", "object": "Räckesstolpar/spjälor", "quantity": "ca 10–14 synliga stolpar", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Trä med glasfyllning (troligen trä med aluminiumdetaljer, osäkert)", "object": "Fönsterpartier/fönsterbågar", "quantity": "ca 6–8 synliga fönsterelement", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Trä (hårdträ, liknande teak eller ek)", "object": "Golvbeläggning på trappplan", "quantity": "ca 2–3 kvm synligt", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Tegel (rödbrun)", "object": "Tegelvägg/fasadparti synlig genom fönster eller inomhus", "quantity": "kan ej bedömas från närbild", "reuse_potential": "Medium", "confidence": "low"}
+      ]
+    },
+    {
+      "file": "img-10.jpg",
+      "items": [
+        {"material": "Trä (troligen ek eller furu) med glasfyllning", "object": "Glasparti/skjutdörr med träram, stor", "quantity": "1 st (ca 2,1 x 2,1 m)", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Trä (troligen ek, liknande finish som glaspartiet)", "object": "Innerdörr med träram och sidoljus i glas", "quantity": "1 st synlig", "reuse_potential": "Hög", "confidence": "medium"},
+        {"material": "Tyg/textil, grå", "object": "Fåtöljer, högrygga", "quantity": "2 st synliga", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Tyg/textil, grå", "object": "Soffa, tvåsits", "quantity": "1 st", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Stål och trä/laminat", "object": "Soffbord, litet med svart metallstomme", "quantity": "1 st", "reuse_potential": "Medium", "confidence": "high"},
+        {"material": "Heltäckningsmatta, grå", "object": "Golvmatta", "quantity": "kan ej bedömas exakt, synlig yta ca 15–20 kvm", "reuse_potential": "Låg", "confidence": "low"},
+        {"material": "Metall/stål, vit", "object": "Ventilationsrör, exponerade i tak", "quantity": "ca 4–5 löpmeter synliga", "reuse_potential": "Medium", "confidence": "medium"},
+        {"material": "Aluminium/metall med diffusor", "object": "Linjära pendel-/takarmaturer, LED", "quantity": "2 st synliga", "reuse_potential": "Medium", "confidence": "medium"}
+      ]
+    }
+  ]
+}

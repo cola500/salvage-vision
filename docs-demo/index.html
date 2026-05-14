@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salvage Vision — prototype demo (mock data)</title>
+<style>
+  :root { --c-bg: #fff; --c-text: #222; --c-muted: #666; --c-border: #ddd; }
+  body { font-family: -apple-system, system-ui, sans-serif; max-width: 1200px; margin: 1rem auto; padding: 0 1rem; color: var(--c-text); }
+  h1 { font-size: 1.4rem; margin: .25rem 0; }
+  h2 { font-size: 1.1rem; margin-top: 2rem; border-bottom: 2px solid #eee; padding-bottom: .25rem; }
+  h3 { font-size: 1rem; margin-top: 1rem; }
+
+  .demo-banner {
+    background: #fff8e1; border: 1px solid #f9d76b; border-radius: 6px;
+    padding: 1rem 1.25rem; margin: 1rem 0 1.5rem 0; color: #5b4500;
+    font-size: .9rem; line-height: 1.45;
+  }
+  .demo-banner strong { display: block; font-size: 1rem; margin-bottom: .35rem; color: #6d4c00; }
+  .demo-banner ul { margin: .5rem 0 0 0; padding-left: 1.25rem; }
+  .demo-banner li { margin: .15rem 0; }
+  .demo-banner .mock-tag { display: inline-block; background: #6d4c00; color: #fff; padding: .1rem .5rem; border-radius: 3px; font-size: .7rem; letter-spacing: .03em; }
+
+  .intro { color: var(--c-muted); font-size: .9rem; margin: .25rem 0 1rem 0; }
+
+  .planritning embed { width: 100%; height: 400px; border: 1px solid var(--c-border); }
+  .fallback { font-size: .8rem; color: #888; margin-top: .25rem; }
+
+  .actions-bar { display: flex; gap: .75rem; align-items: center; margin: .75rem 0; flex-wrap: wrap; }
+  .actions-bar button { padding: .5rem 1rem; font-size: .95rem; cursor: pointer; }
+  .actions-bar .progress { font-size: .85rem; color: var(--c-muted); }
+  .mocked-pill { font-size: .7rem; color: #6d4c00; background: #fff8e1; padding: .15rem .5rem; border-radius: 3px; border: 1px solid #f9d76b; }
+
+  .img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .75rem; }
+  .img-card { border: 2px solid #eee; padding: .5rem; border-radius: 4px; display: flex; flex-direction: column; gap: .4rem; }
+  .img-card img { width: 100%; height: 130px; object-fit: cover; border-radius: 2px; cursor: zoom-in; }
+  .img-card .filename { font-family: monospace; font-size: .75rem; color: #555; }
+  .img-card select { font-size: .85rem; padding: .25rem; }
+  .img-card .analyze-row { display: flex; gap: .5rem; align-items: center; font-size: .8rem; }
+  .img-card button { padding: .25rem .5rem; font-size: .8rem; cursor: pointer; }
+  .img-card .status { color: #666; font-size: .75rem; flex: 1; }
+  .img-card.analyzed { border-color: #4caf50; }
+  .img-card.error { border-color: #f44336; }
+  .img-card.analyzing { border-color: #2196f3; }
+
+  .zone-KONTOR { background: #fff3cd; }
+  .zone-MÖTE { background: #d1ecf1; }
+  .zone-SAMTAL { background: #d4edda; }
+  .zone-PENTRY_PAUS { background: #f8d7da; }
+  .zone-ENTRÉ { background: #e2d4f7; }
+  .zone-OUTSIDE_LOCAL { background: #dcdcdc; color: #555; }
+  .zone- { background: #fff; }
+  .zone-none { background: #fff; }
+
+  .zone-section { margin-top: 1rem; }
+  .zone-section h3 .label { padding: .2rem .5rem; border-radius: 3px; }
+  .zone-section h3 .count { font-weight: normal; font-size: .85rem; color: #555; margin-left: .5rem; }
+  .empty-zone { color: #888; font-size: .85rem; font-style: italic; padding: .25rem 0; }
+  .coverage-gap { display: inline-block; background: #ffe082; color: #6d4c00; padding: .15rem .5rem; border-radius: 3px; font-size: .72rem; margin-left: .5rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: .25rem; }
+  th, td { border: 1px solid var(--c-border); padding: .35rem .5rem; text-align: left; vertical-align: top; }
+  th { background: #f4f4f4; }
+  td[contenteditable] { cursor: text; }
+  td[contenteditable]:focus { outline: 2px solid #4c8bf5; outline-offset: -2px; background: #fff; }
+  tr.removed td { text-decoration: line-through; opacity: .5; }
+  tr.user-dup td { opacity: .65; background: #fafafa; }
+  .dup-flag { background: #ffe082; padding: .1rem .35rem; border-radius: 2px; font-size: .72rem; color: #6d4c00; }
+  .row-actions { white-space: nowrap; }
+  .row-actions button { font-size: .8rem; padding: .15rem .4rem; margin-left: .25rem; cursor: pointer; }
+  .src-label { font-family: monospace; font-size: .75rem; color: #777; }
+
+  .total { margin-top: 2rem; padding: 1rem; background: #f8f8f8; border-radius: 4px; }
+  .total h2 { margin-top: 0; }
+
+  pre { background: #f8f8f8; padding: .75rem; overflow: auto; font-size: .72rem; max-height: 300px; }
+
+  .img-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+               background: rgba(0,0,0,.85); z-index: 1000; cursor: zoom-out;
+               align-items: center; justify-content: center; }
+  .img-modal img { max-width: 95vw; max-height: 95vh; box-shadow: 0 0 30px rgba(0,0,0,.5); }
+
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee; color: #888; font-size: .8rem; }
+  footer a { color: #555; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <strong>Prototype demo — Salvage Vision <span class="mock-tag">MOCK DATA</span></strong>
+  <em>Från lokalbilder till första återbruksunderlag</em>. Det här är ett experiment, inte en färdig produkt. Sidan kör utan backend och utan API-nyckel — AI-analysen är förladdad från en tidigare körning mot riktig Claude Vision.
+  <ul>
+    <li><strong>AI-output är förslag, inte fakta</strong> — användaren bekräftar, korrigerar eller avvisar varje rad</li>
+    <li><strong>Coverage gaps synliggörs</strong> — om en zon inte fotades, är den tom (se MÖTE, WC, STÄD nedan)</li>
+    <li><strong>Möjliga dubletter flaggas</strong> men slås aldrig ihop automatiskt — människan bestämmer</li>
+    <li><strong>Människan validerar</strong> — bedömning av värde, hinder och skick ligger fortfarande utanför systemet</li>
+  </ul>
+</div>
+
+<h1>Room-based aggregation — Hallvägen 21, plan 4</h1>
+<p class="intro">Publik kontorslokalannons från Lokalguiden, 186 kvm, 8 zoner. Tilldelningen är förvald för demo-syften — du kan ändra zon, redigera celler, markera dubletter och se hur den samlade inventeringen uppdateras.</p>
+
+<section class="planritning">
+  <h2>Planritning</h2>
+  <embed src="./assets/planritning.pdf" type="application/pdf">
+  <div class="fallback">
+    Om PDF:en inte visas: <a href="./assets/planritning.pdf" target="_blank">öppna i ny flik</a>.
+    Zoner i ritningen: KONTOR (öppet landskap), MÖTE (stort centralt), SAMTAL (2 st), PENTRY/PAUS, WC, HWC, STÄD och ENTRÉ.
+  </div>
+</section>
+
+<section>
+  <h2>Bilder (10) <span class="mocked-pill">Mocked Claude Vision output</span></h2>
+  <div class="actions-bar">
+    <button id="analyze-all">Analysera alla otaganalysade</button>
+    <span class="progress" id="progress"></span>
+  </div>
+  <div class="img-grid" id="img-grid"></div>
+</section>
+
+<section>
+  <h2>Per zon</h2>
+  <div id="zones"></div>
+</section>
+
+<section class="total">
+  <h2>Samlad inventering</h2>
+  <p style="color:#666; font-size:.85rem; margin:0 0 .5rem 0">Exklusive OUTSIDE_LOCAL, exklusive borttagna och dublettmarkerade.</p>
+  <div id="total"></div>
+</section>
+
+<h2>State (rå JSON)</h2>
+<pre id="raw">(tom)</pre>
+
+<footer>
+  <p>Salvage Vision är en hypotes-driven prototyp för AI-assisterat beslutsstöd för återbruk i ombyggnadsprojekt. Demon kör helt klient-side — inga API-anrop, ingen nyckel. Källkod och experiment-loggar i Git-repot.</p>
+  <p>Modell bakom mock-datan: <code>claude-sonnet-4-6</code> via Anthropic API. Datan fångad <time>2026-05-14</time>. Bilderna är publika från <a href="https://www.lokalguiden.se/lokal/hallvägen-21-söderort" target="_blank" rel="noreferrer">lokalguiden.se</a>.</p>
+</footer>
+
+<div class="img-modal" id="img-modal"><img id="img-modal-img" alt="förstorad bild"></div>
+
+<script>
+// Helt klient-side. Ingen fetch till backend. Mock-AI-data laddas en gång från ./data/mock-analysis.json.
+
+let MOCK = null;
+let ZONES = ['KONTOR', 'MÖTE', 'SAMTAL', 'PENTRY_PAUS', 'ENTRÉ', 'OUTSIDE_LOCAL'];
+let state = { images: [] };
+window.state = state;
+
+function el(tag, opts, children) {
+  opts = opts || {};
+  const node = document.createElement(tag);
+  if (opts.className) node.className = opts.className;
+  if (opts.text !== undefined) node.textContent = opts.text;
+  if (opts.attrs) for (const k in opts.attrs) node.setAttribute(k, opts.attrs[k]);
+  if (opts.dataset) for (const k in opts.dataset) node.dataset[k] = opts.dataset[k];
+  if (opts.on) for (const ev in opts.on) node.addEventListener(ev, opts.on[ev]);
+  (children || []).forEach(c => c && node.appendChild(c));
+  return node;
+}
+
+function renderImageGrid() {
+  const grid = document.getElementById('img-grid');
+  grid.innerHTML = '';
+  state.images.forEach((img, idx) => {
+    const cls = 'img-card ' + (img.status === 'analyzed' ? 'analyzed' : img.status === 'analyzing' ? 'analyzing' : img.status === 'error' ? 'error' : '');
+    const card = el('div', { className: cls });
+    const imgEl = el('img', {
+      attrs: { src: './assets/' + img.file, alt: img.file, title: 'Klicka för att förstora' },
+      on: { click: () => openImgModal('./assets/' + img.file) },
+    });
+    card.appendChild(imgEl);
+    card.appendChild(el('div', { className: 'filename', text: img.file }));
+
+    const select = el('select', { className: 'zone-' + (img.zone || 'none') });
+    select.appendChild(el('option', { text: '(ingen zon)', attrs: { value: '' } }));
+    ZONES.forEach(z => {
+      const opt = el('option', { text: z.replace('_', '/'), attrs: { value: z } });
+      if (z === img.zone) opt.selected = true;
+      select.appendChild(opt);
+    });
+    select.addEventListener('change', e => {
+      state.images[idx].zone = e.target.value;
+      renderAll();
+    });
+    card.appendChild(select);
+
+    const analyzeRow = el('div', { className: 'analyze-row' });
+    const aBtn = el('button', {
+      text: img.status === 'analyzed' ? 'Kör om' : 'Analysera',
+      on: { click: () => analyzeOne(idx) },
+    });
+    if (img.status === 'analyzing') aBtn.disabled = true;
+    analyzeRow.appendChild(aBtn);
+    let statusText = '';
+    if (img.status === 'analyzing') statusText = 'analyserar…';
+    else if (img.status === 'analyzed') statusText = '✓ ' + img.items.length + ' items';
+    else if (img.status === 'error') statusText = '✕ ' + img.error;
+    analyzeRow.appendChild(el('span', { className: 'status', text: statusText }));
+    card.appendChild(analyzeRow);
+
+    grid.appendChild(card);
+  });
+}
+
+function renderZones() {
+  const container = document.getElementById('zones');
+  container.innerHTML = '';
+
+  ZONES.forEach(zone => {
+    const imgsInZone = state.images.filter(i => i.zone === zone);
+    const allItems = [];
+    imgsInZone.forEach(img => {
+      (img.items || []).forEach((it, itemIdx) => {
+        allItems.push(Object.assign({}, it, { _source: img.file, _imgIdx: state.images.indexOf(img), _itemIdx: itemIdx }));
+      });
+    });
+    const liveCount = allItems.filter(i => !i.removed && !i.user_duplicate).length;
+    const dupPairs = findDuplicates(allItems);
+
+    const section = el('div', { className: 'zone-section' });
+    const h3 = el('h3');
+    h3.appendChild(el('span', { className: 'label zone-' + zone, text: zone.replace('_', '/') }));
+    h3.appendChild(el('span', { className: 'count', text: imgsInZone.length + ' bild' + (imgsInZone.length === 1 ? '' : 'er') + ', ' + liveCount + ' live items' }));
+    if (imgsInZone.length === 0) {
+      h3.appendChild(el('span', { className: 'coverage-gap', text: 'coverage gap' }));
+    }
+    section.appendChild(h3);
+
+    if (allItems.length === 0) {
+      section.appendChild(el('div', { className: 'empty-zone', text: '(inga bilder tilldelade ännu, eller inga analyserade)' }));
+      container.appendChild(section);
+      return;
+    }
+
+    const table = el('table');
+    table.appendChild(el('thead', {}, [
+      el('tr', {}, [
+        el('th', { text: 'Objekt' }),
+        el('th', { text: 'Material' }),
+        el('th', { text: 'Mängd' }),
+        el('th', { text: 'Återbruk' }),
+        el('th', { text: 'Conf.' }),
+        el('th', { text: 'Källa' }),
+        el('th', { text: 'Status' }),
+        el('th', { text: '' }),
+      ]),
+    ]));
+
+    const tbody = el('tbody');
+    allItems.forEach((it, aggIdx) => {
+      const classes = [];
+      if (it.removed) classes.push('removed');
+      if (it.user_duplicate) classes.push('user-dup');
+      const tr = el('tr', { className: classes.join(' ') });
+
+      ['object', 'material', 'quantity', 'reuse_potential'].forEach(key => {
+        const td = el('td', { text: it[key] || '', attrs: { contenteditable: 'true' } });
+        td.dataset.imgIdx = it._imgIdx;
+        td.dataset.itemIdx = it._itemIdx;
+        td.dataset.key = key;
+        tr.appendChild(td);
+      });
+      tr.appendChild(el('td', { text: it.confidence || '-', attrs: { style: 'font-size:.75rem; color:#555' } }));
+      tr.appendChild(el('td', { className: 'src-label', text: it._source }));
+
+      const statusTd = el('td');
+      const dupHits = dupPairs.filter(p => p[0] === aggIdx || p[1] === aggIdx);
+      if (dupHits.length > 0 && !it.removed) {
+        const otherIdxs = dupHits.map(p => p[0] === aggIdx ? p[1] : p[0]);
+        const otherSrcs = otherIdxs.map(i => allItems[i]._source).filter((v, i, a) => a.indexOf(v) === i).join(', ');
+        statusTd.appendChild(el('span', { className: 'dup-flag', text: 'möjlig dublett (' + otherSrcs + ')' }));
+      }
+      if (it.user_duplicate) statusTd.appendChild(el('span', { text: ' markerad som dublett', attrs: { style: 'font-size:.72rem; color:#888; margin-left:.25rem' } }));
+      tr.appendChild(statusTd);
+
+      const actions = el('td', { className: 'row-actions' });
+      actions.appendChild(el('button', {
+        text: it.removed ? '↶' : '✕',
+        attrs: { title: it.removed ? 'Återställ' : 'Ta bort' },
+        on: { click: () => toggleRemoved(it._imgIdx, it._itemIdx) },
+      }));
+      actions.appendChild(el('button', {
+        text: it.user_duplicate ? '◌' : '🔗',
+        attrs: { title: it.user_duplicate ? 'Avmarkera som dublett' : 'Markera som dublett' },
+        on: { click: () => toggleUserDuplicate(it._imgIdx, it._itemIdx) },
+      }));
+      tr.appendChild(actions);
+
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    section.appendChild(table);
+    container.appendChild(section);
+  });
+}
+
+function renderTotal() {
+  const allActive = [];
+  state.images.forEach(img => {
+    if (img.zone === 'OUTSIDE_LOCAL' || !img.zone) return;
+    (img.items || []).forEach(it => {
+      if (it.removed || it.user_duplicate) return;
+      allActive.push(Object.assign({}, it, { _source: img.file, _zone: img.zone }));
+    });
+  });
+
+  const container = document.getElementById('total');
+  container.innerHTML = '';
+  if (allActive.length === 0) {
+    container.appendChild(el('div', { text: 'Ingen samlad inventering ännu — kör analysen för att se den uppdateras.', attrs: { style: 'color:#888' } }));
+    return;
+  }
+
+  container.appendChild(el('div', { text: 'Totalt ' + allActive.length + ' aktiva observationer över ' + new Set(allActive.map(i => i._zone)).size + ' zoner.', attrs: { style: 'font-weight:bold; margin-bottom:.5rem' } }));
+
+  const table = el('table');
+  table.appendChild(el('thead', {}, [
+    el('tr', {}, [
+      el('th', { text: 'Zon' }),
+      el('th', { text: 'Objekt' }),
+      el('th', { text: 'Material' }),
+      el('th', { text: 'Mängd' }),
+      el('th', { text: 'Återbruk' }),
+      el('th', { text: 'Källa' }),
+    ]),
+  ]));
+  const tbody = el('tbody');
+  allActive.forEach(it => {
+    tbody.appendChild(el('tr', {}, [
+      el('td', { className: 'zone-' + it._zone, text: it._zone.replace('_', '/') }),
+      el('td', { text: it.object || '' }),
+      el('td', { text: it.material || '' }),
+      el('td', { text: it.quantity || '' }),
+      el('td', { text: it.reuse_potential || '' }),
+      el('td', { className: 'src-label', text: it._source }),
+    ]));
+  });
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
+
+function renderRaw() {
+  document.getElementById('raw').textContent = JSON.stringify(state, null, 2);
+}
+
+function renderAll() {
+  renderImageGrid();
+  renderZones();
+  renderTotal();
+  renderRaw();
+}
+
+function toggleRemoved(imgIdx, itemIdx) {
+  const item = state.images[imgIdx].items[itemIdx];
+  item.removed = !item.removed;
+  renderAll();
+}
+function toggleUserDuplicate(imgIdx, itemIdx) {
+  const item = state.images[imgIdx].items[itemIdx];
+  item.user_duplicate = !item.user_duplicate;
+  renderAll();
+}
+
+function mockItemsFor(file) {
+  const m = MOCK.images.find(i => i.file === file);
+  if (!m) return [];
+  return m.items.map(it => Object.assign({}, it, { removed: false, user_duplicate: false }));
+}
+
+async function analyzeOne(idx) {
+  const img = state.images[idx];
+  img.status = 'analyzing';
+  img.error = null;
+  renderImageGrid();
+  // Simulera realistisk latency per bild (700-1100 ms)
+  const delay = 700 + Math.random() * 400;
+  await new Promise(r => setTimeout(r, delay));
+  img.items = mockItemsFor(img.file);
+  img.source = 'mocked from claude-sonnet-4-6';
+  img.status = 'analyzed';
+  renderAll();
+}
+
+async function analyzeAll() {
+  const pending = state.images.map((img, idx) => idx).filter(idx => state.images[idx].status !== 'analyzed' && state.images[idx].status !== 'analyzing');
+  const progress = document.getElementById('progress');
+  const total = pending.length;
+  if (total === 0) {
+    progress.textContent = '(alla redan analyserade — använd "Kör om" på korten för att simulera igen)';
+    return;
+  }
+  let done = 0;
+  progress.textContent = 'analyserar… 0/' + total;
+  const concurrency = 3;
+  async function worker() {
+    while (pending.length > 0) {
+      const next = pending.shift();
+      if (next === undefined) return;
+      await analyzeOne(next);
+      done += 1;
+      progress.textContent = 'analyserar… ' + done + '/' + total;
+    }
+  }
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
+  progress.textContent = 'klar — ' + done + ' analyserade (mock)';
+}
+
+document.addEventListener('input', e => {
+  const td = e.target;
+  if (!td.dataset || td.dataset.imgIdx === undefined) return;
+  const imgIdx = parseInt(td.dataset.imgIdx, 10);
+  const itemIdx = parseInt(td.dataset.itemIdx, 10);
+  const key = td.dataset.key;
+  const item = state.images[imgIdx].items[itemIdx];
+  item[key] = td.textContent;
+  renderTotal();
+  renderRaw();
+});
+
+function tokenize(str) {
+  return new Set(
+    (str || '').toLowerCase()
+      .replace(/[^a-zåäöéèüçñ0-9 ]/g, ' ')
+      .split(/\s+/)
+      .filter(t => t.length >= 3)
+  );
+}
+
+function jaccard(a, b) {
+  const A = tokenize(a), B = tokenize(b);
+  if (A.size === 0 || B.size === 0) return 0;
+  let intersect = 0;
+  A.forEach(x => { if (B.has(x)) intersect++; });
+  const union = new Set([...A, ...B]).size;
+  return intersect / union;
+}
+
+function findDuplicates(items) {
+  const dups = [];
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].removed) continue;
+    for (let j = i + 1; j < items.length; j++) {
+      if (items[j].removed) continue;
+      if (items[i]._source === items[j]._source) continue;
+      const mj = jaccard(items[i].material, items[j].material);
+      const oj = jaccard(items[i].object, items[j].object);
+      const score = (mj + oj) / 2;
+      if (score >= 0.4) dups.push([i, j, score]);
+    }
+  }
+  return dups;
+}
+
+const imgModal = document.getElementById('img-modal');
+const imgModalImg = document.getElementById('img-modal-img');
+function openImgModal(src) {
+  imgModalImg.src = src;
+  imgModal.style.display = 'flex';
+}
+imgModal.addEventListener('click', () => { imgModal.style.display = 'none'; });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') imgModal.style.display = 'none'; });
+
+document.getElementById('analyze-all').addEventListener('click', analyzeAll);
+
+// Init: ladda mock-data + förfyllt zon-mapping
+fetch('./data/mock-analysis.json')
+  .then(r => {
+    if (!r.ok) throw new Error('mock-analysis.json kunde inte laddas (HTTP ' + r.status + ')');
+    return r.json();
+  })
+  .then(data => {
+    MOCK = data;
+    ZONES = data.zones;
+    const files = data.images.map(i => i.file);
+    state.images = files.map(file => ({
+      file,
+      zone: data.default_zone_mapping[file] || '',
+      items: null,
+      status: 'idle',
+      error: null,
+      source: null,
+    }));
+    renderAll();
+  })
+  .catch(e => {
+    document.getElementById('img-grid').innerHTML =
+      '<div style="color:#c00; font-size:.9rem">Kunde inte ladda mock-data: ' + e.message +
+      '. Kör demon med en statisk webbserver (t.ex. <code>python3 -m http.server</code>) — inte direkt via file://-protokoll.</div>';
+  });
+</script>
+</body>
+</html>
