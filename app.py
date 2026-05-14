@@ -195,7 +195,7 @@ ROOMS_HTML = """<!doctype html>
 <section>
   <h2>Bilder (10)</h2>
   <div class="actions-bar">
-    <button id="analyze-all">Analysera alla otaganalysade</button>
+    <button id="analyze-all">Skapa inventeringsutkast</button>
     <span class="progress" id="progress"></span>
   </div>
   <div class="img-grid" id="img-grid"></div>
@@ -268,14 +268,14 @@ function renderImageGrid() {
 
     const analyzeRow = el('div', { className: 'analyze-row' });
     const aBtn = el('button', {
-      text: img.status === 'analyzed' ? 'Kör om' : 'Analysera',
+      text: img.status === 'analyzed' ? 'Gör om' : 'Skapa utkast',
       on: { click: () => analyzeOne(idx) },
     });
     if (img.status === 'analyzing') aBtn.disabled = true;
     analyzeRow.appendChild(aBtn);
     let statusText = '';
-    if (img.status === 'analyzing') statusText = 'analyserar…';
-    else if (img.status === 'analyzed') statusText = '✓ ' + img.items.length + ' items';
+    if (img.status === 'analyzing') statusText = 'skapar utkast…';
+    else if (img.status === 'analyzed') statusText = '✓ ' + img.items.length + ' rader';
     else if (img.status === 'error') statusText = '✕ ' + img.error;
     analyzeRow.appendChild(el('span', { className: 'status', text: statusText }));
     card.appendChild(analyzeRow);
@@ -302,11 +302,11 @@ function renderZones() {
     const section = el('div', { className: 'zone-section' });
     const h3 = el('h3');
     h3.appendChild(el('span', { className: 'label zone-' + zone, text: zone.replace('_', '/') }));
-    h3.appendChild(el('span', { className: 'count', text: imgsInZone.length + ' bild' + (imgsInZone.length === 1 ? '' : 'er') + ', ' + liveCount + ' live items' }));
+    h3.appendChild(el('span', { className: 'count', text: imgsInZone.length + ' bild' + (imgsInZone.length === 1 ? '' : 'er') + ', ' + liveCount + ' rader' }));
     section.appendChild(h3);
 
     if (allItems.length === 0) {
-      section.appendChild(el('div', { className: 'empty-zone', text: '(inga bilder tilldelade ännu, eller inga analyserade)' }));
+      section.appendChild(el('div', { className: 'empty-zone', text: '(inga bilder tilldelade ännu, eller inget utkast skapat)' }));
       container.appendChild(section);
       return;
     }
@@ -386,7 +386,7 @@ function renderTotal() {
   const container = document.getElementById('total');
   container.innerHTML = '';
   if (allActive.length === 0) {
-    container.appendChild(el('div', { text: 'Ingen samlad inventering ännu — tilldela zoner och kör analys.', attrs: { style: 'color:#888' } }));
+    container.appendChild(el('div', { text: 'Ingen samlad inventering ännu — tilldela zoner och skapa ett utkast.', attrs: { style: 'color:#888' } }));
     return;
   }
 
@@ -464,7 +464,7 @@ async function analyzeAll() {
   const progress = document.getElementById('progress');
   const total = pending.length;
   let done = 0;
-  progress.textContent = 'analyserar… 0/' + total;
+  progress.textContent = 'skapar utkast… 0/' + total;
   const concurrency = 3;
   async function worker() {
     while (pending.length > 0) {
@@ -472,11 +472,11 @@ async function analyzeAll() {
       if (next === undefined) return;
       await analyzeOne(next);
       done += 1;
-      progress.textContent = 'analyserar… ' + done + '/' + total;
+      progress.textContent = 'skapar utkast… ' + done + '/' + total;
     }
   }
   await Promise.all(Array.from({ length: concurrency }, () => worker()));
-  progress.textContent = 'klar — ' + done + ' analyserade';
+  progress.textContent = 'klar — ' + done + ' utkast skapade';
 }
 
 document.addEventListener('input', e => {
