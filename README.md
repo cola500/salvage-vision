@@ -1,44 +1,24 @@
+# Salvage Vision — AI-assisterat beslutsstöd för materialåterbruk
+
+> Hypotesdriven prototyp som hjälper någon utan återbrukskompetens att gå från foto av en lokal till ett trovärdigt inventeringsutkast på under 30 sekunder.
+
+<img width="1235" height="599" alt="Screenshot 2026-05-17 at 21 26 39" src="https://github.com/user-attachments/assets/296db83a-e127-44f3-90dd-ab0a79ef78d5" />
+
+<img width="1226" height="467" alt="Screenshot 2026-05-17 at 21 26 59" src="https://github.com/user-attachments/assets/752b8a15-2a29-48a4-ab44-5f448b302775" />
+
+Återbruksinventering i ombyggnadsprojekt är manuellt, tidsödslande och kräver specialistkompetens — vilket gör att den ofta hoppas över. Den här prototypen utforskar om AI kan ta tillräckligt mycket av första utkastet att tröskeln sänks från "expert behövs" till "en arkitekt med en mobiltelefon räcker".
+
+Projektet är **experiment, inte produkt** — varje slice bevisar eller dödar en specifik hypotes innan nästa byggs. Hittills validerat: bild → strukturerad lista är användbart (snitt 4.0/5 över 7 testbilder, latency 6.7–11 s).
+
+## Vad detta repo visar
+
+- **Hypotesdriven AI-produktutveckling i renkultur** — `HYPOTHESIS.md`, `experiments/` med datapunkter per slice, validated learnings med commit-referenser.
+- **Domän framför teknik** — README beskriver problemet (5 frågor en beslutsfattare måste ha svar på) innan en enda kodrad nämns.
+- **Vertikala slices** — steg 1-3 av flödet (fånga → identifiera → korrigera) är byggt; steg 4-6 (värde, hinder, design) finns som domänmodell men inte kod. Det är avsiktligt: bevisa hållbarhet innan vi bygger ovanpå.
+- **Breadth-tests som beslutsverktyg** — `experiments/001` testade 7 bilder och rapporterade snitt-score + variansobservation, inte bara "fungerade".
+- **AI som arbetspartner, inte som leverans** — målet är beslutsstöd för människor, inte att eliminera människor.
+
 ---
-title: Salvage Vision — AI-assisterat beslutsstöd för återbruk i befintliga lokaler
-description: Hypotes-driven prototyp för att fånga, förstå och återbruka material i ombyggnadsprojekt med AI som stöd
-category: project-root
-status: prototype
-last_updated: 2026-05-13
-sections:
-  - Problemet
-  - From local capture to reuse decision
-  - Hypotes (confirmed)
-  - Domänmodell (konceptuell)
-  - Arkitekturprinciper
-  - Validated learnings
-  - Demo-flöde (vad som funkar idag)
-  - Tech stack
-  - Köra
-  - Projektstruktur
-  - Arbetsmetod — varför små vertikala slices
-  - Köra experiment
-  - Nuvarande begränsningar (medvetna)
-  - Open questions
-  - Next experiment
-  - Future experiments
-  - Konventioner
-  - Status
----
-
-# Salvage Vision — AI-assisterat beslutsstöd för återbruk i befintliga lokaler
-
-> Arbetsnamn — byt om något bättre dyker upp.
-
-Hypotes-driven prototyp för att **fånga, förstå och återbruka material i
-befintliga lokaler** med AI som stöd. Detta är *experiment*, inte färdig
-produkt — varje slice ska bevisa eller döda en hypotes innan nästa byggs.
-
-Kärnvärdet vi utforskar är inte "AI identifierar material i bilder" — det
-är **beslutsstöd för ombyggnadsprojekt**: hjälpa en arkitekt, byggherre
-eller fastighetsägare gå från en lokal de står i till ett genomtänkt
-beslut om vad som kan återbrukas, vad som är ett hinder, och hur det
-påverkar den nya designen.
-
 ## Problemet
 
 Återbruksinventering är ett nyckelmoment i hållbar ombyggnad — men idag
